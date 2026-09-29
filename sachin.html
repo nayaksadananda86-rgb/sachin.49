@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>sachin.49</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f2f2f2;
+    color: #111;
+}
+
+/* Header */
+header {
+    background: #111;
+    color: white;
+    padding: 15px 7%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #ff3040;
+}
+
+header button {
+    background: #ff3040;
+    color: white;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+/* Main */
+.container {
+    max-width: 650px;
+    margin: 25px auto;
+    padding: 0 15px;
+}
+
+/* Upload box */
+.upload-box {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+    margin-bottom: 25px;
+}
+
+.upload-box h2 {
+    margin-bottom: 15px;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+input[type="file"] {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.post-btn {
+    width: 100%;
+    padding: 12px;
+    background: #111;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.post-btn:hover {
+    background: #333;
+}
+
+/* Post */
+.post {
+    background: white;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    overflow: hidden;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    gap: 10px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg,#ff3040,#7b2cff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+}
+
+.username {
+    font-weight: bold;
+}
+
+.post-content img,
+.post-content video {
+    width: 100%;
+    display: block;
+    max-height: 600px;
+    object-fit: cover;
+}
+
+.caption {
+    padding: 15px;
+    font-size: 15px;
+}
+
+.actions {
+    display: flex;
+    gap: 20px;
+    padding: 0 15px 15px;
+}
+
+.actions button {
+    background: none;
+    border: none;
+    font-size: 17px;
+    cursor: pointer;
+}
+
+.like-btn.liked {
+    color: #ff3040;
+}
+
+.delete-btn {
+    color: #777;
+    margin-left: auto;
+}
+
+.empty {
+    text-align: center;
+    color: #777;
+    padding: 30px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">sachin<span>.49</span></div>
+    <button onclick="scrollToUpload()">＋ Post</button>
+</header>
+
+<div class="container">
+
+    <!-- Upload -->
+    <div class="upload-box" id="uploadBox">
+
+        <h2>Create a post</h2>
+
+        <input
+            type="text"
+            id="username"
+            placeholder="Your username"
+        >
+
+        <input
+            type="text"
+            id="caption"
+            placeholder="Write something..."
+        >
+
+        <input
+            type="file"
+            id="media"
+            accept="image/*,video/*"
+        >
+
+        <button class="post-btn" onclick="createPost()">
+            Post
+        </button>
+
+    </div>
+
+    <!-- Feed -->
+    <div id="feed">
+
+        <div class="empty" id="emptyMessage">
+            No posts yet. Be the first to post! 📸
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function scrollToUpload() {
+    document.getElementById("uploadBox")
+        .scrollIntoView({behavior:"smooth"});
+}
+
+
+function createPost() {
+
+    const username =
+        document.getElementById("username").value.trim();
+
+    const caption =
+        document.getElementById("caption").value.trim();
+
+    const file =
+        document.getElementById("media").files[0];
+
+    if (!username) {
+        alert("Please enter your username.");
+        return;
+    }
+
+    if (!file) {
+        alert("Please select a photo or video.");
+        return;
+    }
+
+    const fileURL = URL.createObjectURL(file);
+
+    const post = document.createElement("div");
+    post.className = "post";
+
+    let mediaHTML = "";
+
+    if (file.type.startsWith("image/")) {
+
+        mediaHTML =
+        `<img src="${fileURL}" alt="Post">`;
+
+    } else if (file.type.startsWith("video/")) {
+
+        mediaHTML =
+        `<video src="${fileURL}" controls></video>`;
+
+    } else {
+
+        alert("Please select an image or video.");
+        return;
+
+    }
+
+    post.innerHTML = `
+
+        <div class="post-header">
+
+            <div class="avatar">
+                ${username.charAt(0).toUpperCase()}
+            </div>
+
+            <div class="username">
+                @${username}
+            </div>
+
+        </div>
+
+        <div class="post-content">
+            ${mediaHTML}
+        </div>
+
+        <div class="caption">
+            ${caption}
+        </div>
+
+        <div class="actions">
+
+            <button
+                class="like-btn"
+                onclick="likePost(this)">
+                ❤️ <span>0</span>
+            </button>
+
+            <button onclick="sharePost()">
+                🔗 Share
+            </button>
+
+            <button
+                class="delete-btn"
+                onclick="deletePost(this)">
+                🗑️
+            </button>
+
+        </div>
+
+    `;
+
+    const feed = document.getElementById("feed");
+
+    const empty =
+        document.getElementById("emptyMessage");
+
+    if (empty) {
+        empty.remove();
+    }
+
+    feed.prepend(post);
+
+    document.getElementById("username").value = "";
+    document.getElementById("caption").value = "";
+    document.getElementById("media").value = "";
+}
+
+
+function likePost(button) {
+
+    const count =
+        button.querySelector("span");
+
+    let likes =
+        parseInt(count.innerText);
+
+    if (button.classList.contains("liked")) {
+
+        likes--;
+
+        button.classList.remove("liked");
+
+    } else {
+
+        likes++;
+
+        button.classList.add("liked");
+
+    }
+
+    count.innerText = likes;
+}
+
+
+function deletePost(button) {
+
+    const post =
+        button.closest(".post");
+
+    post.remove();
+
+    if (document.querySelectorAll(".post").length === 0) {
+
+        document.getElementById("feed").innerHTML =
+        `<div class="empty" id="emptyMessage">
+            No posts yet. Be the first to post! 📸
+        </div>`;
+
+    }
+}
+
+
+function sharePost() {
+
+    if (navigator.share) {
+
+        navigator.share({
+            title: "sachin.49",
+            text: "Check out this post on sachin.49!"
+        });
+
+    } else {
+
+        alert("Share feature is not supported on this browser.");
+
+    }
+}
+
+</script>
+
+</body>
+</html>
